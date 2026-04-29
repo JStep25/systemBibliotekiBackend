@@ -60,4 +60,25 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+router.put("/:id", auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { tytul, autor, status } = req.body;
+
+    const result = await pool.query(
+      "UPDATE ksiazki SET tytul = $1, autor = $2, status = $3 WHERE id_ksiazki = $4 RETURNING *",
+      [tytul, autor, status, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Nie znaleziono książki" });
+    }
+
+    res.json({ message: "Zaktualizowano pomyślnie", book: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Błąd serwera podczas edycji" });
+  }
+});
+
 module.exports = router;
