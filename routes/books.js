@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 const { auth } = require("../middleware/auth");
+const { admin } = require("../middleware/auth");
 
 router.get("/", async (req, res) => {
   try {
@@ -18,7 +19,7 @@ router.get("/", async (req, res) => {
 });
 
 
-router.post("/", async (req, res) => {
+router.post("/", auth, admin, async (req, res) => {
   try {
     const { tytul, autor } = req.body;
 
@@ -43,7 +44,7 @@ router.post("/", async (req, res) => {
 });
 
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", auth, admin, async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -61,7 +62,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.put("/:id", auth, async (req, res) => {
+router.put("/:id", auth, admin, async (req, res) => {
   try {
     const { id } = req.params;
     const { tytul, autor, status } = req.body;

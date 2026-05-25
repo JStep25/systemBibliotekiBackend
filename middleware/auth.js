@@ -14,4 +14,12 @@ function auth(req, res, next) {
   }
 }
 
-module.exports = { auth };
+function admin(req, res, next) {
+  if (req.user && req.user.role === 'admin') {
+    next();
+  } else {
+    return res.status(403).json({ message: "Brak uprawnień administratora. Dostęp zabroniony." });
+  }
+}
+
+module.exports = { admin, auth };
